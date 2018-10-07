@@ -130,17 +130,18 @@ def run_dual_regression(left_right_hemisphere_data, BM, subjects, size_of_g=9128
 
     g_pseudo_inverse = np.linalg.pinv(G)
     for subject in subjects:
-        subject_data = []
-        for session in subject.sessions:
-            inp = session.cifti
-            normalized_cifti = utils.utils.fsl_variance_normalize(inp).transpose()
-            deterended_data = np.transpose(
-                scipy.signal.detrend(np.transpose(normalized_cifti), type='constant', axis=0))
-            subject_data.append(deterended_data)
+        subject_data = [deterend_and_normalize(session.cifti) for session in subject.sessions]
         subject_data = np.concatenate(subject_data, axis=1)
         T = g_pseudo_inverse @ subject_data
         t = util.fsl_glm(np.transpose(T), np.transpose(subject_data))
         subject.left_right_hemisphere_data = np.transpose(t) * hemis
+
+
+def deterend_and_normalize(inp):
+    normalized_cifti = utils.utils.fsl_variance_normalize(inp).transpose()
+    deterended_data = np.transpose(
+        scipy.signal.detrend(np.transpose(normalized_cifti), type='constant', axis=0))
+    return deterended_data
 
 
 def get_subcortical_parcellation(cifti_image, brain_maps):
