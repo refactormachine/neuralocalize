@@ -100,7 +100,7 @@ class FeatureExtractor:
 			
 			feature_extraction.run_dual_regression(left_right_hemisphere_data, self._default_brain_map, subjects)
 			subjects_not_loaded = [subjects[i] for i in subjects_not_loaded_indices]
-			feature_extraction.get_semi_dense_connectome(semi_dense_connectome_data, subjects_not_loaded)
+			feature_extraction.set_correlation_coefficients(semi_dense_connectome_data, subjects_not_loaded)
 			feature_extraction_res = [sub.correlation_coefficient.transpose() for sub in subjects_not_loaded]
 
 			for i, subject_result in zip(subjects_not_loaded_indices, feature_extraction_res):

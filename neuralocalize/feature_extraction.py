@@ -231,7 +231,7 @@ def get_subcortical_parcellation(cifti_image, brain_maps):
 	return np.hstack(sub_cortex_clusters).transpose()
 
 
-def get_semi_dense_connectome(semi_dense_connectome_data, subjects):
+def set_correlation_coefficients(semi_dense_connectome_data, subjects):
 	"""Final feature extraction (forming semi-dense connectome)
 	For each subject, load RFMRI data, then load ROIs from above to calculate semi-dense connectome.
 

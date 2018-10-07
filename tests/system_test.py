@@ -10,7 +10,7 @@ method_to_nii = [
     (feature_extraction.run_group_ica_together, 'nii_path'),
     (feature_extraction.run_dual_regression, 'nii_path'),
     (feature_extraction.get_subcortical_parcellation, 'nii_path'),
-    (feature_extraction.get_semi_dense_connectome, 'nii_path'),
+    (feature_extraction.set_correlation_coefficients, 'nii_path'),
 ]
 
 def abstract_test(method_to_test, nii_path):
@@ -47,7 +47,7 @@ def run_group_ica_together_test():
         , r'..\..\matlab_results\ica_both_lowdim.dtseries.nii')
 
 
-def get_semi_dense_connectome_test():
+def set_correlation_coefficients_test():
     sc_cifti_image, _ = load_cifti_brain_data_from_file(
         r'..\test_resources\SC_clusters.dtseries.nii')
 
@@ -66,7 +66,7 @@ def get_semi_dense_connectome_test():
     #     as_line = np.arange(6*4) / 1000
     #     session.cifti = np.reshape(as_line, [6, 4])
     #     print("session.cifti:", session.cifti)
-    feature_extraction.get_semi_dense_connectome(sc_cifti_image.transpose(), subjects)
+    feature_extraction.set_correlation_coefficients(sc_cifti_image.transpose(), subjects)
     ret = subjects[0].correlation_coefficient
 
     actual_output, _ = load_cifti_brain_data_from_file(r'..\test_resources\noam_results\100307_RFMRI_nosmoothing.dtseries.nii')
@@ -106,7 +106,7 @@ def run_dual_regression_test():
 # except Exception:
 #     traceback.print_exc()
 # try:
-#     get_semi_dense_connectome_test()
+#     set_correlation_coefficients_test()
 # except Exception:
 #     traceback.print_exc()
 # try:
