@@ -244,21 +244,25 @@ def set_correlation_coefficients(semi_dense_connectome_data, subjects):
 	"""
 	print("Running Get Semi-Dense Connectome")
 	for subject in subjects:
-		W = []
-		ROIS = np.concatenate([subject.left_right_hemisphere_data, semi_dense_connectome_data], axis=1)
-		for session in subject.sessions:
-			scaled = utils.utils.fsl_demean(session.cifti)
-			scaled = utils.utils.fsl_variance_normalize(scaled)
-			scaled = scaled.transpose()
-			W.append(scaled)
-		W = np.concatenate(W, axis=1)
-		# MULTIPLE REGRESSION
-		T = sl.lstsq(ROIS, W)[0]
-		# CORRELATION COEFFICIENT
-		normalized_T = utils.utils.fsl_normalize(T, 1)
-		normalized_W = utils.utils.fsl_normalize(np.transpose(W), 0)
-		F = normalized_T @ normalized_W
-		subject.correlation_coefficient = F
+		subject.correlation_coefficient = _get_correlation_coefficient(semi_dense_connectome_data, subject)
+
+
+def _get_correlation_coefficient(semi_dense_connectome_data, subject):
+	W = []
+	ROIS = np.concatenate([subject.left_right_hemisphere_data, semi_dense_connectome_data], axis=1)
+	for session in subject.sessions:
+		scaled = utils.utils.fsl_demean(session.cifti)
+		scaled = utils.utils.fsl_variance_normalize(scaled)
+		scaled = scaled.transpose()
+		W.append(scaled)
+	W = np.concatenate(W, axis=1)
+	# MULTIPLE REGRESSION
+	T = sl.lstsq(ROIS, W)[0]
+	# CORRELATION COEFFICIENT
+	normalized_T = utils.utils.fsl_normalize(T, 1)
+	normalized_W = utils.utils.fsl_normalize(np.transpose(W), 0)
+	F = normalized_T @ normalized_W
+	return F
 
 
 def get_spatial_filters(group_ica_together):
